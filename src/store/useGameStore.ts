@@ -2,10 +2,11 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import { createGame, reduceGame } from "../engine/game";
-import type { GameConfig, GameEvent, GameState, PlayerSetup } from "../engine/types";
+import { createQuickGame, DEFAULT_QUICK_SETTINGS, pullQuickTrigger } from "../engine/quick";
+import type { GameConfig, GameEvent, GameState, PlayerSetup, QuickGameState, QuickSettings } from "../engine/types";
 import type { Locale } from "../i18n/translations";
 
-export type Page = "home" | "setup" | "game";
+export type Page = "home" | "setup" | "game" | "quick-setup" | "quick-game";
 
 export interface Preferences {
   soundEnabled: boolean;
@@ -18,6 +19,8 @@ interface AppStore {
   page: Page;
   overlay: "settings" | "rules" | null;
   game: GameState | null;
+  quickGame: QuickGameState | null;
+  quickSettings: QuickSettings;
   locale: Locale;
   preferences: Preferences;
   setPage: (page: Page) => void;
@@ -27,6 +30,10 @@ interface AppStore {
   startGame: (players: PlayerSetup[], config: GameConfig) => void;
   dispatch: (event: GameEvent) => void;
   resetGame: () => void;
+  updateQuickSettings: (settings: Partial<QuickSettings>) => void;
+  startQuickGame: () => void;
+  pullQuickTrigger: () => void;
+  newQuickRound: () => void;
 };
 
 const initialPreferences: Preferences = {
@@ -42,6 +49,8 @@ export const useGameStore = create<AppStore>()(
       page: "home",
       overlay: null,
       game: null,
+      quickGame: null,
+      quickSettings: DEFAULT_QUICK_SETTINGS,
       locale: "ru",
       preferences: initialPreferences,
       setPage: (page) =>
@@ -76,6 +85,30 @@ export const useGameStore = create<AppStore>()(
           state.page = "home";
           state.overlay = null;
         }),
+      updateQuickSettings: (settings) =>
+        set((state) => {
+          const chambers = settings.chambers ?? state.quickSettings.chambers;
+          state.quickSettings = {
+            ...state.quickSettings,
+            ...settings,
+            bullets: Math.max(1, Math.min(settings.bullets ?? state.quickSettings.bullets, chambers - 1)),
+          };
+        }),
+      startQuickGame: () =>
+        set((state) => {
+          state.quickGame = createQuickGame(state.quickSettings);
+          state.page = "quick-game";
+          state.overlay = null;
+        }),
+      pullQuickTrigger: () =>
+        set((state) => {
+          if (state.quickGame) state.quickGame = pullQuickTrigger(state.quickGame);
+        }),
+      newQuickRound: () =>
+        set((state) => {
+          state.quickGame = createQuickGame(state.quickSettings);
+          state.page = "quick-game";
+        }),
     })),
     {
       name: "last-call-save-v1",
@@ -83,6 +116,8 @@ export const useGameStore = create<AppStore>()(
         ({
           page: state.page,
           game: state.game,
+          quickGame: state.quickGame,
+          quickSettings: state.quickSettings,
           locale: state.locale,
           preferences: state.preferences,
         }) as AppStore,

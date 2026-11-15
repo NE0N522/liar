@@ -12,6 +12,8 @@ const WinnerScreen = lazy(() => import("./ResultScreens").then((module) => ({ de
 const SettingsOverlay = lazy(() => import("./Overlays").then((module) => ({ default: module.SettingsOverlay })));
 const RulesOverlay = lazy(() => import("./Overlays").then((module) => ({ default: module.RulesOverlay })));
 const RevolverScene = lazy(() => import("../scene/RevolverScene"));
+const QuickSetupScreen = lazy(() => import("./QuickMode").then((module) => ({ default: module.QuickSetupScreen })));
+const QuickGameScreen = lazy(() => import("./QuickMode").then((module) => ({ default: module.QuickGameScreen })));
 
 export default function App() {
   const t = useCopy();
@@ -24,7 +26,7 @@ export default function App() {
   const setOverlay = useGameStore((state) => state.setOverlay);
 
   useEffect(() => {
-    if (page !== "game" || !("wakeLock" in navigator)) return;
+    if ((page !== "game" && page !== "quick-game") || !("wakeLock" in navigator)) return;
     let sentinel: WakeLockSentinel | null = null;
     let disposed = false;
     const requestWakeLock = async () => {
@@ -54,14 +56,18 @@ export default function App() {
   }, [page]);
 
   const startNew = () => setPage("setup");
+  const startQuick = () => setPage("quick-setup");
   const continueGame = () => setPage("game");
   const activeScreen = () => {
+    if (page === "quick-setup") return <QuickSetupScreen key="quick-setup" />;
+    if (page === "quick-game") return <QuickGameScreen key="quick-game" />;
     if (page === "setup") return <SetupScreen key="setup" onBack={() => setPage("home")} />;
     if (page !== "game" || !game) {
       return (
         <HomeScreen
           key="home"
           onNewGame={startNew}
+          onQuickStart={startQuick}
           onContinue={continueGame}
           onRules={() => setOverlay("rules")}
         />

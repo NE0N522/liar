@@ -130,6 +130,7 @@ export function TargetCard({
   return (
     <div
       className={"playing-card target-card target-" + displayColor + (compact ? " playing-card-small" : "")}
+      role="img"
       aria-label={displayRank + (color ? (locale === "ru" ? (color === "red" ? " красная" : " чёрная") : (color === "red" ? " red" : " black")) : "")}
     >
       <span className="target-corner">

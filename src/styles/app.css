@@ -3692,6 +3692,402 @@ select:focus-visible {
   }
 }
 
+/* Quick mode */
+.quick-setup-screen,
+.quick-game-screen {
+  flex: 1;
+  padding: 31px 0 28px;
+}
+
+.quick-setup-grid {
+  display: grid;
+  max-width: 920px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 14px;
+}
+
+.quick-setup-card {
+  min-height: 250px;
+}
+
+.quick-color-toggle,
+.quick-odds-toggle {
+  margin-top: 17px;
+}
+
+.quick-settings-note {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+  color: #9b9689;
+  font-size: 11px;
+}
+
+.quick-settings-note .playing-card {
+  width: 37px;
+  height: 53px;
+}
+
+.quick-settings-note .playing-card-small .target-corner b {
+  font-size: 13px;
+}
+
+.quick-settings-note .playing-card-small .target-center {
+  font-size: 19px;
+}
+
+.quick-bullet-setting {
+  display: flex;
+  min-height: 58px;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgb(229 210 176 / 8%);
+  color: #ded5c4;
+  font-size: 12px;
+}
+
+.quick-bullet-setting > div:first-child {
+  display: grid;
+  gap: 3px;
+}
+
+.quick-bullet-setting small {
+  color: #8e897d;
+  font-size: 9px;
+}
+
+.quick-stepper {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: rgb(0 0 0 / 16%);
+}
+
+.quick-stepper button {
+  width: 42px;
+  min-height: 40px;
+  border: 0;
+  background: transparent;
+  color: var(--brass-soft);
+  font-size: 21px;
+}
+
+.quick-stepper button:disabled {
+  color: #66645c;
+}
+
+.quick-stepper output {
+  min-width: 28px;
+  text-align: center;
+  color: #f0e8d8;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.quick-setup-actions {
+  display: flex;
+  max-width: 920px;
+  align-items: center;
+  gap: 16px;
+  margin-top: 19px;
+}
+
+.quick-setup-actions > span {
+  color: #8e897d;
+  font-size: 10px;
+}
+
+.quick-game-screen {
+  max-width: 1080px;
+}
+
+.quick-game-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: stretch;
+  gap: 16px;
+}
+
+.quick-card-stage {
+  position: relative;
+  display: flex;
+  min-height: 420px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid rgb(228 204 157 / 12%);
+  border-radius: 15px;
+  background: radial-gradient(ellipse at 50% 46%, rgb(39 90 66 / 46%), rgb(16 42 32 / 24%) 46%, rgb(10 18 14 / 24%) 78%);
+}
+
+.quick-card-halo {
+  position: absolute;
+  width: 280px;
+  aspect-ratio: 1;
+  border: 1px solid rgb(225 191 129 / 11%);
+  border-radius: 50%;
+  box-shadow: 0 0 0 24px rgb(225 191 129 / 2%), 0 0 0 48px rgb(225 191 129 / 2%);
+}
+
+.quick-card-label,
+.quick-target-name,
+.quick-target-mode {
+  position: relative;
+  z-index: 1;
+}
+
+.quick-card-label {
+  margin-bottom: 19px;
+  color: #bda36e;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+}
+
+.quick-card-stage > .playing-card {
+  z-index: 1;
+  width: 139px;
+  height: 198px;
+  padding: 13px 12px;
+  box-shadow: 0 22px 48px rgb(0 0 0 / 35%), 0 0 40px rgb(226 195 133 / 7%);
+  transform: rotate(-3deg);
+}
+
+.quick-card-stage .target-corner b {
+  font-size: 34px;
+}
+
+.quick-card-stage .target-corner small {
+  font-size: 22px;
+}
+
+.quick-card-stage .target-center {
+  font-size: 58px;
+}
+
+.quick-card-stage .target-corner-bottom {
+  right: 12px;
+  bottom: 13px;
+}
+
+.quick-target-name {
+  margin-top: 25px;
+  color: #ede4d3;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 22px;
+  font-weight: 500;
+}
+
+.quick-target-mode {
+  margin-top: 3px;
+  color: #999487;
+  font-size: 10px;
+}
+
+.quick-revolver-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 24px;
+}
+
+.quick-cylinder-label,
+.quick-chance {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #aaa393;
+  font-size: 11px;
+}
+
+.quick-cylinder-label b,
+.quick-chance b {
+  color: #e3d1a9;
+  font-size: 12px;
+}
+
+.quick-cylinder {
+  display: flex;
+  gap: 8px;
+  margin: 12px 0 17px;
+}
+
+.quick-cylinder .chamber-dot {
+  width: 14px;
+  height: 14px;
+  border-color: rgb(220 193 139 / 55%);
+}
+
+.quick-cylinder .chamber-dot.spent {
+  border-color: #c6a564;
+}
+
+.quick-outcome {
+  display: flex;
+  min-height: 72px;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid rgb(220 193 139 / 12%);
+  border-radius: 9px;
+  padding: 12px;
+  background: rgb(0 0 0 / 12%);
+}
+
+.quick-outcome-mark {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid rgb(225 191 129 / 32%);
+  border-radius: 50%;
+  color: var(--brass-soft);
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 20px;
+}
+
+.quick-outcome p {
+  margin: 0;
+  color: #c6bdac;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.quick-outcome-survived .quick-outcome-mark {
+  border-color: rgb(134 181 130 / 50%);
+  color: #a6c69c;
+}
+
+.quick-outcome-fired {
+  border-color: rgb(188 87 68 / 42%);
+  background: rgb(106 41 34 / 14%);
+}
+
+.quick-outcome-fired .quick-outcome-mark {
+  border-color: rgb(188 87 68 / 65%);
+  color: #e18c78;
+}
+
+.quick-outcome-fired p {
+  color: #e5a08e;
+}
+
+.quick-chance {
+  min-height: 44px;
+  margin-top: 5px;
+}
+
+.quick-trigger {
+  display: flex;
+  min-height: 68px;
+  align-items: center;
+  gap: 13px;
+  border: 1px solid #d4b477;
+  border-radius: 9px;
+  padding: 0 16px;
+  background: linear-gradient(130deg, #d0ae70, #ad8246);
+  box-shadow: 0 9px 24px rgb(144 98 39 / 18%), inset 0 1px rgb(255 255 255 / 34%);
+  color: #171a14;
+  text-align: left;
+  transition: transform var(--motion-quick) ease, filter var(--motion-quick) ease;
+}
+
+.quick-trigger:hover:not(:disabled) {
+  filter: brightness(1.08);
+  transform: translateY(-2px);
+}
+
+.quick-trigger:disabled {
+  cursor: default;
+  filter: grayscale(.65);
+}
+
+.quick-trigger > span {
+  display: grid;
+  flex: 1;
+  gap: 3px;
+}
+
+.quick-trigger b {
+  font-size: 13px;
+}
+
+.quick-trigger small {
+  color: rgb(25 25 18 / 65%);
+  font-size: 9px;
+}
+
+.quick-new-round {
+  display: inline-flex;
+  min-height: 47px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 7px;
+  border: 0;
+  background: transparent;
+  color: #beb4a1;
+  font-size: 11px;
+}
+
+.quick-new-round:hover {
+  color: var(--brass-soft);
+}
+
+@media (max-width: 760px) {
+  .quick-setup-grid,
+  .quick-game-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .quick-setup-card {
+    min-height: auto;
+  }
+
+  .quick-card-stage {
+    min-height: 350px;
+  }
+
+  .quick-revolver-card {
+    padding: 18px;
+  }
+
+  .quick-setup-actions {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  .quick-setup-actions .primary-button {
+    width: 100%;
+  }
+
+  .quick-setup-actions > span {
+    text-align: center;
+  }
+}
+
+@media (max-width: 380px) {
+  .quick-card-stage {
+    min-height: 320px;
+  }
+
+  .quick-cylinder {
+    gap: 6px;
+  }
+
+  .quick-cylinder .chamber-dot {
+    width: 12px;
+    height: 12px;
+  }
+}
+
 @media (max-width: 380px) {
   .brand-lockup strong {
     font-size: 10px;

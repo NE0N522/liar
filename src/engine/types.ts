@@ -49,6 +49,22 @@ export interface Cylinder {
   chamberStates: boolean[];
 }
 
+export interface QuickSettings {
+  colorTruth: boolean;
+  ranks: string[];
+  chambers: number;
+  bullets: number;
+  showOdds: boolean;
+}
+
+export interface QuickGameState {
+  tableRank: string;
+  tableColor: CardColor | null;
+  cylinder: Cylinder;
+  pulls: number;
+  outcome: "waiting" | "survived" | "fired";
+}
+
 export interface GameConfig {
   handSize: number;
   deck: DeckConfig;

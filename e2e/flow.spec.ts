@@ -1,5 +1,37 @@
 import { expect, test } from "@playwright/test";
 
+test("quick mode draws a target and lets the player pull the trigger without turns or players", async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(window.crypto, "getRandomValues", {
+      configurable: true,
+      value: <T extends ArrayBufferView | null>(array: T): T => {
+        if (array) new Uint8Array(array.buffer, array.byteOffset, array.byteLength).fill(0);
+        return array;
+      },
+    });
+  });
+  await page.goto("/");
+  await page.getByRole("button", { name: "Быстрый режим" }).click();
+  await expect(page.getByRole("heading", { name: "Одна карта. Один барабан." })).toBeVisible();
+  await page.locator("#quick-rank-range").selectOption("six");
+  await page.locator("#quick-chambers").selectOption("8");
+  await page.getByRole("button", { name: "Добавить пулю" }).click();
+  await page.getByRole("button", { name: "Добавить пулю" }).click();
+  await page.getByRole("button", { name: "Открыть быстрый стол" }).click();
+
+  await expect(page.getByRole("heading", { name: "Ваша карта. Ваш курок." })).toBeVisible();
+  await expect(page.locator(".quick-target-name")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Игроки" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: /Нажать курок/ })).toBeVisible();
+  await page.getByRole("button", { name: /Нажать курок/ }).click();
+  await expect(page.locator(".quick-outcome")).toContainText(/Щелчок|Выстрел/);
+  await expect(page.locator(".quick-trigger small")).toContainText("1 · спусков");
+
+  await page.getByRole("button", { name: "Новая карта и барабан" }).click();
+  await expect(page.locator(".quick-outcome")).toContainText("Барабан готов");
+  await expect(page.locator(".quick-trigger small")).toContainText("0 · спусков");
+});
+
 test("three players finish a round, challenge, reveal, shoot, and crown a winner", async ({ page }) => {
   await page.addInitScript(() => {
     Object.defineProperty(window.crypto, "getRandomValues", {
@@ -49,9 +81,21 @@ test("fits a narrow phone in portrait and landscape with touch-sized primary act
   await page.goto("/");
   await page.setViewportSize({ width: 375, height: 812 });
   await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  const quickStart = page.getByRole("button", { name: "Быстрый режим" });
+  await expect(quickStart).toBeVisible();
+  expect((await quickStart.boundingBox())?.height ?? 0).toBeGreaterThanOrEqual(56);
+  await quickStart.click();
+  await expect(page.getByRole("button", { name: "Открыть быстрый стол" })).toBeVisible();
+  await page.getByRole("button", { name: "Открыть быстрый стол" }).click();
+  const quickTrigger = page.getByRole("button", { name: /Нажать курок/ });
+  await expect(quickTrigger).toBeVisible();
+  expect((await quickTrigger.boundingBox())?.height ?? 0).toBeGreaterThanOrEqual(56);
+  await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  await page.getByRole("button", { name: "В меню" }).click();
+  await expect(page.getByRole("button", { name: "Новая партия" })).toBeVisible();
+
   const newGame = page.getByRole("button", { name: "Новая партия" });
   await expect(newGame).toBeVisible();
-  expect((await newGame.boundingBox())?.height ?? 0).toBeGreaterThanOrEqual(56);
 
   await page.setViewportSize({ width: 844, height: 390 });
   await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);

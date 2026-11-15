@@ -5,10 +5,12 @@ import { useCopy } from "./useCopy";
 
 export default function HomeScreen({
   onNewGame,
+  onQuickStart,
   onContinue,
   onRules,
 }: {
   onNewGame: () => void;
+  onQuickStart: () => void;
   onContinue: () => void;
   onRules: () => void;
 }) {
@@ -25,7 +27,10 @@ export default function HomeScreen({
           <h1>{heroLines[0]}<br /><em>{heroLines[1]}</em></h1>
           <p>{t("heroBody")}</p>
           <div className="hero-actions">
-            <PrimaryButton onClick={onNewGame}>{t("newGame")}</PrimaryButton>
+            <PrimaryButton onClick={onQuickStart}>{t("quickStart")}</PrimaryButton>
+            <button className="text-button" type="button" onClick={onNewGame}>
+              {t("newGame")} <ArrowUpRight size={15} aria-hidden="true" />
+            </button>
             {game && game.phase !== "finished" && (
               <button className="text-button" type="button" onClick={onContinue}>
                 {t("continue")} <ArrowUpRight size={15} aria-hidden="true" />
