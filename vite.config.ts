@@ -31,17 +31,6 @@ export default defineConfig(({ mode }) => {
         },
         workbox: {
           globPatterns: ["**/*.{js,css,html,ico,png,svg,txt,webp,woff,woff2}"],
-          globIgnores: ["**/Revolver3D-*.js"],
-          runtimeCaching: [
-            {
-              urlPattern: /\/assets\/Revolver3D-[^/]+\.js$/,
-              handler: "CacheFirst",
-              options: {
-                cacheName: "lazy-scene-chunks",
-                expiration: { maxEntries: 2, maxAgeSeconds: 31_536_000 },
-              },
-            },
-          ],
         },
       }),
     ],
