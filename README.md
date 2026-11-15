@@ -56,4 +56,6 @@ npm run smoke
 
 ## Сборка и публикация
 
-`npm run build` создаёт статический сайт в `dist/`. Его можно развернуть на Vercel, Netlify, GitHub Pages или любом статическом хостинге с SPA fallback на `index.html`. PWA Service Worker и manifest формируются при production-сборке. Тяжёлая 3D-сцена загружается отдельно, когда она нужна, и кэшируется при первом открытии.
+`npm run build` создаёт статический сайт в `dist/`. В репозитории настроен GitHub Actions workflow: при push в `main` он собирает приложение для пути `/liar/` и публикует `dist/` на GitHub Pages. Адрес сайта: <https://ne0n522.github.io/liar/>. Для первой публикации в настройках репозитория выберите **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+
+PWA Service Worker и manifest формируются при production-сборке. Тяжёлая 3D-сцена загружается отдельно, когда она нужна, и кэшируется при первом открытии. Для Vercel, Netlify или другого статического хостинга используйте обычную команду `npm run build` и настройте SPA fallback на `index.html`.
