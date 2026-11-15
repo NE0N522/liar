@@ -1,0 +1,24 @@
+:root {
+  color-scheme: dark;
+  --ink: #09110e;
+  --ink-raised: #121b16;
+  --felt: #183c2d;
+  --felt-deep: #102a20;
+  --felt-highlight: #275a42;
+  --brass: #c39b5e;
+  --brass-soft: #e1bf81;
+  --ember: #bc5744;
+  --bone: #f0e8d8;
+  --muted: #a49d8f;
+  --line: rgb(228 204 157 / 14%);
+  --green-live: #86b582;
+  --shadow-deep: 0 24px 72px rgb(0 0 0 / 42%);
+  --radius-card: 16px;
+  --motion-quick: 160ms;
+  --motion-slow: 420ms;
+  font-family: Arial, "Helvetica Neue", sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
