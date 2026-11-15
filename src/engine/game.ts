@@ -44,13 +44,17 @@ export function createGame(
     falseChallenges: 0,
     revolver: createCylinder(config.revolver.chambers, config.revolver.bullets, source),
   }));
-  const table = chooseTable(config.deck, [], null, false, source);
   const chaos = config.chaosEnabled && randomInt(4, source) === 0 ? pick(CHAOS_EVENTS, source) : null;
+  const tableDeck = chaos === "double-truth"
+    ? { ...config.deck, namedRanksPerRound: Math.min(2, config.deck.ranks.length) }
+    : config.deck;
+  const table = chooseTable(tableDeck, [], null, false, source);
   const game: GameState = {
     config,
     players,
     activeIndex: 0,
     round: 1,
+    turnsThisRound: 0,
     tableRanks: table.ranks,
     tableColor: table.color,
     previousTableRanks: [],
@@ -174,6 +178,7 @@ export function reduceGame(
       activeIndex: playerIndex,
       lastPlay: null,
       stats: { ...state.stats, turns: Math.max(0, state.stats.turns - 1) },
+      turnsThisRound: Math.max(0, state.turnsThisRound - 1),
       log: logEntry(state, "Последний ход отменён"),
     };
   }
@@ -194,13 +199,14 @@ export function reduceGame(
       challengerId: null,
       resultTruthful: null,
       stats: { ...state.stats, turns: state.stats.turns + 1 },
+      turnsThisRound: state.turnsThisRound + 1,
       log: logEntry(state, player.name + " положил " + event.quantity + " карт рубашкой вверх"),
     };
     return validateGame(result) ? state : result;
   }
   if (event.type === "CHALLENGE") {
     if (state.phase !== "playing" || !state.lastPlay) return state;
-    if (state.stats.turns <= 1) return state;
+    if (state.turnsThisRound <= 1) return state;
     const challenger = state.players[state.activeIndex];
     if (!challenger?.alive || challenger.id === state.lastPlay.playerId) return state;
     const name = challenger.handCount === 0 ? challenger.name + " обязан вызвать" : challenger.name + " вызвал";
@@ -237,18 +243,25 @@ export function reduceGame(
   if (event.type === "NEXT_ROUND") {
     if (state.phase !== "round-over") return state;
     const shooterIndex = state.players.findIndex((player) => player.id === state.shooterId);
-    const nextIndex = state.config.shooterStarts
-      ? state.players.findIndex((player) => player.id === state.shooterId && player.alive)
-      : nextAliveIndex(state.players, shooterIndex, state.direction);
+    const chaosEnabled = state.config.chaosEnabled && randomInt(4, source) === 0;
+    const chaos = chaosEnabled ? pick(CHAOS_EVENTS, source) : null;
+    const tableDeck = chaos === "double-truth"
+      ? { ...state.config.deck, namedRanksPerRound: Math.min(2, state.config.deck.ranks.length) }
+      : state.config.deck;
     const table = chooseTable(
-      state.config.deck,
+      tableDeck,
       state.tableRanks,
       state.tableColor,
       state.config.noRepeatTable,
       source,
     );
-    const chaosEnabled = state.config.chaosEnabled && randomInt(4, source) === 0;
-    const chaos = chaosEnabled ? pick(CHAOS_EVENTS, source) : null;
+    const direction: 1 | -1 = chaos === "reverse" ? (state.direction === 1 ? -1 : 1) : state.direction;
+    const configuredStart = state.config.shooterStarts
+      ? state.players.findIndex((player) => player.id === state.shooterId && player.alive)
+      : -1;
+    const nextIndex = configuredStart >= 0
+      ? configuredStart
+      : nextAliveIndex(state.players, shooterIndex, direction);
     const resetCylinder = (current: Cylinder): Cylinder =>
       state.chaos === "shuffle-cylinder"
         ? reshuffleCylinder(current, state.config.revolver.bullets, source)
@@ -261,8 +274,9 @@ export function reduceGame(
     const next: GameState = {
       ...state,
       players,
-      activeIndex: nextIndex < 0 ? nextAliveIndex(state.players, shooterIndex, state.direction) : nextIndex,
+      activeIndex: nextIndex,
       round: state.round + 1,
+      turnsThisRound: 0,
       tableRanks: table.ranks,
       tableColor: table.color,
       previousTableRanks: state.tableRanks,
@@ -282,7 +296,7 @@ export function reduceGame(
           : state.sharedRevolver,
       log: logEntry(state, "Раунд " + (state.round + 1) + ". Раздайте по " + state.config.handSize + " карт."),
       stats: { ...state.stats, rounds: state.stats.rounds + 1 },
-      direction: chaos === "reverse" ? (state.direction === 1 ? -1 : 1) : state.direction,
+      direction,
     };
     return chaos ? { ...next, log: logEntry(next, "Хаос-раунд: " + chaos) } : next;
   }

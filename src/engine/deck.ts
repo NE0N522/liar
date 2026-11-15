@@ -2,7 +2,8 @@ import { pick, shuffle } from "./rng";
 import type { CardColor, DeckConfig, RandomSource } from "./types";
 
 export const CLASSIC_RANKS = ["K", "Q", "A"];
-export const PHYSICAL_RANKS = ["9", "10", "J", "Q", "K", "A"];
+export const PHYSICAL_RANKS = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"];
+export const DEFAULT_PHYSICAL_RANKS = ["9", "10", "J", "Q", "K", "A"];
 export const RANK_NAMES: Record<string, string> = {
   "2": "Двойка",
   "3": "Тройка",
@@ -60,15 +61,15 @@ export function chooseTable(
   noRepeat: boolean,
   source: RandomSource,
 ): { ranks: string[]; color: CardColor | null } {
-  const candidates = config.ranks.filter(
-    (rank) => !noRepeat || config.ranks.length <= config.namedRanksPerRound || !previousRanks.includes(rank),
-  );
-  const available = candidates.length >= config.namedRanksPerRound ? candidates : config.ranks;
-  let ranks = shuffle(available, source).slice(0, Math.min(config.namedRanksPerRound, config.ranks.length));
-  if (noRepeat && config.ranks.length > config.namedRanksPerRound && ranks.length > 0) {
-    while (ranks.every((rank) => previousRanks.includes(rank))) {
-      ranks = shuffle(config.ranks, source).slice(0, config.namedRanksPerRound);
-    }
+  const amount = Math.min(config.namedRanksPerRound, config.ranks.length);
+  const freshRanks = config.ranks.filter((rank) => !previousRanks.includes(rank));
+  let ranks: string[];
+  if (noRepeat && freshRanks.length > 0 && config.ranks.length > amount) {
+    const first = shuffle(freshRanks, source).slice(0, Math.min(amount, freshRanks.length));
+    const remaining = amount - first.length;
+    ranks = [...first, ...shuffle(config.ranks.filter((rank) => !first.includes(rank)), source).slice(0, remaining)];
+  } else {
+    ranks = shuffle(config.ranks, source).slice(0, amount);
   }
   if (ranks.length === 0) ranks = [pick(config.ranks, source)];
   let color: CardColor | null = null;

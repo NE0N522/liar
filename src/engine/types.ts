@@ -55,6 +55,7 @@ export interface GameConfig {
   revolver: RevolverConfig;
   noRepeatTable: boolean;
   shooterStarts: boolean;
+  showHandCounts: boolean;
   chaosEnabled: boolean;
   timerSeconds: 0 | 15 | 30 | 60;
 }
@@ -78,6 +79,7 @@ export interface GameState {
   players: Player[];
   activeIndex: number;
   round: number;
+  turnsThisRound: number;
   tableRanks: string[];
   tableColor: CardColor | null;
   previousTableRanks: string[];
@@ -129,6 +131,7 @@ export const DEFAULT_GAME_CONFIG: GameConfig = {
   revolver: { mode: "classic", chambers: 6, bullets: 1, showOdds: false },
   noRepeatTable: true,
   shooterStarts: false,
+  showHandCounts: true,
   chaosEnabled: false,
   timerSeconds: 0,
 };

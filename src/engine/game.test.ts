@@ -110,6 +110,17 @@ describe("deck rules", () => {
     expect(table.ranks).not.toEqual(["6"]);
     expect(table.color).not.toBe("red");
   });
+
+  it("guarantees at least one new rank when only one rank remains fresh", () => {
+    const table = chooseTable(
+      { preset: "physical", ranks: ["6", "7", "8"], copiesPerRank: 4, jokers: 2, namedRanksPerRound: 2, colorTruth: false },
+      ["6", "7"],
+      null,
+      true,
+      seededRandom(5),
+    );
+    expect(table.ranks).toContain("8");
+  });
 });
 
 describe("game state machine", () => {
