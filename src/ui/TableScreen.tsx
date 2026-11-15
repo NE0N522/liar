@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Undo2 } from "lucide-react";
 import { useGameStore } from "../store/useGameStore";
 import { TargetCard } from "./components";
+import { RevolverDisplay } from "../scene/RevolverDisplay";
 import { useCopy } from "./useCopy";
 import { odds } from "../engine/revolver";
 
@@ -167,32 +168,35 @@ export default function TableScreen() {
             </div>
           )}
         </div>
-        <div className="action-buttons">
-          {!forcedChallenge && [1, 2, 3].map((quantity) => (
-            <button
-              type="button"
-              className="play-button"
-              key={quantity}
-              disabled={!actionsEnabled || !active?.alive || (active?.handCount ?? 0) < quantity}
-              onClick={() => dispatch({ type: "PLAY", quantity })}
-            >
-              <span className="play-number">0{quantity}</span>
-              <span>{t(quantity === 1 ? "oneCard" : quantity === 2 ? "twoCards" : "threeCards")}</span>
-            </button>
-          ))}
-          {canChallenge && (
-            <button
-              type="button"
-              className={"liar-button" + (forcedChallenge ? " liar-button-forced" : "")}
-              disabled={!actionsEnabled}
-              onClick={() => dispatch({ type: "CHALLENGE" })}
-              aria-label={t("liar")}
-            >
-              <span className="liar-signal" />
-              <span>{t("liar")}</span>
-              <small>{forcedChallenge ? t("forcedChallenge") : locale === "ru" ? "Вызвать прошлый ход" : "Challenge last play"}</small>
-            </button>
-          )}
+        <div className="action-revolver-row">
+          <RevolverDisplay className="table-revolver-visual" spinning={false} cocking={false} outcome={null} />
+          <div className="action-buttons">
+            {!forcedChallenge && [1, 2, 3].map((quantity) => (
+              <button
+                type="button"
+                className="play-button"
+                key={quantity}
+                disabled={!actionsEnabled || !active?.alive || (active?.handCount ?? 0) < quantity}
+                onClick={() => dispatch({ type: "PLAY", quantity })}
+              >
+                <span className="play-number">0{quantity}</span>
+                <span>{t(quantity === 1 ? "oneCard" : quantity === 2 ? "twoCards" : "threeCards")}</span>
+              </button>
+            ))}
+            {canChallenge && (
+              <button
+                type="button"
+                className={"liar-button" + (forcedChallenge ? " liar-button-forced" : "")}
+                disabled={!actionsEnabled}
+                onClick={() => dispatch({ type: "CHALLENGE" })}
+                aria-label={t("liar")}
+              >
+                <span className="liar-signal" />
+                <span>{t("liar")}</span>
+                <small>{forcedChallenge ? t("forcedChallenge") : locale === "ru" ? "Вызвать прошлый ход" : "Challenge last play"}</small>
+              </button>
+            )}
+          </div>
         </div>
         <div className="action-footer">
           <span>{forcedChallenge ? t("forcedChallenge") : locale === "ru" ? "Ход закрыт рубашкой вверх" : "Play face down"}</span>

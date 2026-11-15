@@ -1,4 +1,4 @@
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, type ReactNode } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Bloom, ChromaticAberration, EffectComposer, Noise, Vignette } from "@react-three/postprocessing";
 import { Environment, Lightformer, RoundedBox } from "@react-three/drei";
@@ -83,7 +83,6 @@ function RevolverModel({ spinning, cocking }: { spinning: boolean; cocking: bool
 
   useFrame((_, delta) => {
     if (cylinderRef.current && spinning) cylinderRef.current.rotation.z += delta * 8;
-    if (cylinderRef.current && !spinning) cylinderRef.current.rotation.z *= Math.max(0, 1 - delta * 3);
     if (hammerRef.current) {
       const target = cocking ? 0.42 : 0.05;
       hammerRef.current.rotation.z += (target - hammerRef.current.rotation.z) * Math.min(1, delta * 10);
@@ -91,7 +90,7 @@ function RevolverModel({ spinning, cocking }: { spinning: boolean; cocking: bool
   });
 
   return (
-    <group rotation={[0.07, -0.1, -0.06]} scale={1.24} position={[-0.68, -0.08, 0]}>
+    <group rotation={[0.07, -0.1, -0.06]} scale={1.24} position={[-0.68, 0.08, 0]}>
       <RoundedBox args={[1.9, 0.69, 0.36]} radius={0.15} smoothness={5} position={[-0.13, 0.04, 0]} material={frameMaterial} castShadow receiveShadow />
       <mesh position={[1.3, 0.23, 0]} rotation={[0, 0, Math.PI / 2]} material={darkSteel} castShadow>
         <cylinderGeometry args={[0.18, 0.23, 1.62, 32]} />
@@ -146,18 +145,27 @@ function RevolverModel({ spinning, cocking }: { spinning: boolean; cocking: bool
 export default function Revolver3D({
   spinning,
   cocking,
+  motionEnabled,
+  ambientMotion,
   lowQuality,
   onLowQuality,
+  fallback,
 }: {
   spinning: boolean;
   cocking: boolean;
+  motionEnabled: boolean;
+  ambientMotion: boolean;
   lowQuality: boolean;
   onLowQuality: () => void;
+  fallback: ReactNode;
 }) {
   const chromaticOffset = useMemo(() => new Vector2(0.0007, 0.0007), []);
+  const animate = motionEnabled && (ambientMotion || spinning || cocking);
   return (
-    <div className="revolver-3d" aria-label="Револьвер, собранный в 3D">
+    <div className="revolver-3d" role="img" aria-label="Револьвер, собранный в 3D">
       <Canvas
+        fallback={fallback}
+        frameloop={animate ? "always" : "demand"}
         dpr={lowQuality ? 1 : [1, 1.5]}
         camera={{ position: [0, 0, 5.2], fov: 35 }}
         gl={{ antialias: !lowQuality, alpha: true, powerPreference: "high-performance" }}
@@ -172,7 +180,7 @@ export default function Revolver3D({
           <Lightformer form="rect" intensity={1.6} position={[4, -1, 1]} rotation={[0, -Math.PI / 3, 0]} scale={[4, 2, 1]} color="#b8864d" />
         </Environment>
         <RevolverModel spinning={spinning} cocking={cocking} />
-        {!lowQuality && <DustMotes />}
+        {animate && ambientMotion && !lowQuality && <DustMotes />}
         {!lowQuality && (
           <EffectComposer multisampling={0}>
             <Bloom intensity={0.34} luminanceThreshold={0.4} mipmapBlur />
@@ -181,7 +189,7 @@ export default function Revolver3D({
             <ChromaticAberration offset={chromaticOffset} radialModulation modulationOffset={0.16} />
           </EffectComposer>
         )}
-        <PerformanceMeter onLowQuality={onLowQuality} />
+        {animate && <PerformanceMeter onLowQuality={onLowQuality} />}
       </Canvas>
     </div>
   );

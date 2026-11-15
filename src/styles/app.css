@@ -2165,24 +2165,65 @@ select:focus-visible {
 
 .scene-gun {
   position: absolute;
-  top: 46%;
+  top: 44%;
   left: 50%;
-  display: grid;
-  width: min(840px, 82vw);
-  aspect-ratio: 1.64;
-  place-items: center;
+  width: min(900px, calc(100vw - 32px));
+  aspect-ratio: 1.64 / 1;
   transform: translate(-50%, -50%);
+}
+
+.scene-gun-motion {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  min-width: 0;
+  min-height: 0;
+  place-items: center;
+  transform-origin: center;
+}
+
+.scene-revolver-display,
+.quick-revolver-visual,
+.table-revolver-visual {
+  position: relative;
+  display: grid;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  place-items: center;
+}
+
+.revolver-display {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: visible;
 }
 
 .revolver-3d,
 .revolver-fallback {
-  position: relative;
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
+  min-width: 0;
+  min-height: 0;
   overflow: visible;
 }
 
+.revolver-3d > div {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
 .revolver-3d canvas {
+  position: absolute !important;
+  inset: 0 !important;
   display: block;
   width: 100% !important;
   height: 100% !important;
@@ -2242,6 +2283,42 @@ select:focus-visible {
   gap: 10px;
   color: #bcb19c;
   font-size: 11px;
+}
+
+.quick-revolver-visual {
+  height: clamp(180px, 23vw, 250px);
+  margin: -3px auto 8px;
+  background: radial-gradient(ellipse at 50% 56%, rgb(189 147 79 / 11%), transparent 67%);
+}
+
+.quick-revolver-visual .revolver-display {
+  width: 100%;
+  height: 100%;
+}
+
+.quick-revolver-visual .revolver-3d,
+.quick-revolver-visual .revolver-fallback {
+  width: 100%;
+  height: 100%;
+}
+
+.table-revolver-visual {
+  height: 142px;
+  overflow: hidden;
+  border-radius: 8px;
+  background: radial-gradient(ellipse at 50% 56%, rgb(189 147 79 / 9%), transparent 72%);
+}
+
+.action-revolver-row {
+  display: grid;
+  grid-template-columns: minmax(180px, .58fr) minmax(0, 1.42fr);
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.action-revolver-row .action-buttons {
+  min-width: 0;
 }
 
 .scene-loading svg {
@@ -4051,11 +4128,27 @@ select:focus-visible {
   }
 
   .quick-card-stage {
-    min-height: 350px;
+    min-height: 310px;
   }
 
   .quick-revolver-card {
     padding: 18px;
+  }
+
+  .quick-revolver-visual {
+    height: clamp(170px, 54vw, 210px);
+    margin: 0 auto 8px;
+  }
+
+  .action-revolver-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
+  .table-revolver-visual {
+    height: 102px;
+    max-width: 360px;
+    margin: -3px auto 2px;
   }
 
   .quick-setup-actions {
@@ -4159,8 +4252,8 @@ select:focus-visible {
 
   .scene-gun {
     top: 44%;
-    width: min(100vw, 620px);
-    aspect-ratio: 1.56;
+    width: min(900px, calc(100vw - 24px));
+    aspect-ratio: 1.64 / 1;
   }
 
   .scene-lamp-cone {
@@ -4259,9 +4352,18 @@ select:focus-visible {
   }
 
   .scene-gun {
-    top: 50%;
-    left: 51%;
-    width: min(59vw, 650px);
+    top: 47%;
+    left: 41%;
+    width: min(46vw, 560px);
+  }
+
+  .action-revolver-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .table-revolver-visual {
+    height: 82px;
   }
 
   .scene-lower {

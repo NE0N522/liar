@@ -1,8 +1,11 @@
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowDown, ArrowRight, CircleDot, Crosshair, RotateCcw } from "lucide-react";
+import { playSound, vibrate } from "../audio/sounds";
 import { odds } from "../engine/revolver";
 import { PHYSICAL_RANKS } from "../engine/deck";
 import { rankDisplay } from "../i18n/ranks";
+import { RevolverDisplay, usePrefersReducedMotion } from "../scene/RevolverDisplay";
 import { useGameStore } from "../store/useGameStore";
 import { PrimaryButton, TargetCard } from "./components";
 import { useCopy } from "./useCopy";
@@ -113,6 +116,77 @@ export function QuickGameScreen() {
   const pull = useGameStore((state) => state.pullQuickTrigger);
   const newRound = useGameStore((state) => state.newQuickRound);
   const setPage = useGameStore((state) => state.setPage);
+  const preferences = useGameStore((state) => state.preferences);
+  const prefersReducedMotion = usePrefersReducedMotion();
+  const [isPulling, setIsPulling] = useState(false);
+  const [spinning, setSpinning] = useState(false);
+  const [cocking, setCocking] = useState(false);
+  const pullingRef = useRef(false);
+  const pullTimers = useRef<number[]>([]);
+
+  useEffect(() => () => pullTimers.current.forEach(window.clearTimeout), []);
+
+  const schedule = (callback: () => void, duration: number) => {
+    const timer = window.setTimeout(() => {
+      pullTimers.current = pullTimers.current.filter((pending) => pending !== timer);
+      callback();
+    }, duration);
+    pullTimers.current.push(timer);
+  };
+
+  const finishPull = () => {
+    setSpinning(false);
+    pull();
+    const outcome = useGameStore.getState().quickGame?.outcome;
+    if (outcome === "fired") {
+      playSound("shot", preferences.volume, preferences.soundEnabled);
+      vibrate(260, preferences.haptics);
+    } else {
+      playSound("dry", preferences.volume, preferences.soundEnabled);
+      vibrate([45, 40, 70], preferences.haptics);
+    }
+    setIsPulling(false);
+    pullingRef.current = false;
+  };
+
+  const handlePull = () => {
+    if (!quick || pullingRef.current || quick.outcome === "fired" || quick.cylinder.spent >= quick.cylinder.chambers) return;
+    pullingRef.current = true;
+    setIsPulling(true);
+    setCocking(true);
+    playSound("cock", preferences.volume, preferences.soundEnabled);
+    vibrate(35, preferences.haptics);
+
+    if (prefersReducedMotion) {
+      setCocking(false);
+      finishPull();
+      return;
+    }
+
+    schedule(() => {
+      setCocking(false);
+      setSpinning(true);
+      playSound("ratchet", preferences.volume, preferences.soundEnabled);
+      vibrate(45, preferences.haptics);
+      schedule(finishPull, 720);
+    }, 220);
+  };
+
+  const handleNewRound = () => {
+    pullTimers.current.forEach(window.clearTimeout);
+    pullTimers.current = [];
+    pullingRef.current = false;
+    setIsPulling(false);
+    setCocking(false);
+    setSpinning(false);
+    newRound();
+    if (!prefersReducedMotion) {
+      setSpinning(true);
+      playSound("ratchet", preferences.volume, preferences.soundEnabled);
+      schedule(() => setSpinning(false), 760);
+    }
+  };
+
   if (!quick) return null;
 
   const chance = odds(quick.cylinder);
@@ -121,7 +195,9 @@ export function QuickGameScreen() {
     ? t("quickFired")
     : quick.outcome === "survived"
       ? t("quickSurvived")
-      : t("quickWaiting");
+      : isPulling
+        ? t("quickPulling")
+        : t("quickWaiting");
 
   return (
     <motion.main
@@ -153,6 +229,12 @@ export function QuickGameScreen() {
 
         <section className="setup-card quick-revolver-card" aria-label={t("revolver")}>
           <div className="section-topline"><span className="section-index">01</span><h2>{t("quickRevolverTitle")}</h2></div>
+          <RevolverDisplay
+            className="quick-revolver-visual"
+            spinning={spinning}
+            cocking={cocking}
+            outcome={quick.outcome === "fired" ? "out" : quick.outcome === "survived" ? "live" : null}
+          />
           <div className="quick-cylinder-label">
             <span>{t("bullets")}</span><b>{quick.cylinder.bulletsRemaining} / {settings.bullets}</b>
           </div>
@@ -168,12 +250,12 @@ export function QuickGameScreen() {
           {settings.showOdds && quick.outcome !== "fired" && (
             <div className="quick-chance"><span>{t("quickChance")}</span><b>{chance.denominator ? chance.numerator + " / " + chance.denominator : "—"}</b></div>
           )}
-          <button className="quick-trigger" type="button" onClick={pull} disabled={quick.outcome === "fired" || quick.cylinder.spent >= quick.cylinder.chambers}>
+          <button className="quick-trigger" type="button" onClick={handlePull} disabled={isPulling || quick.outcome === "fired" || quick.cylinder.spent >= quick.cylinder.chambers}>
             <Crosshair size={21} aria-hidden="true" />
-            <span><b>{quick.outcome === "fired" ? t("quickFiredButton") : t("quickPull")}</b><small>{quick.pulls} · {t("quickShotsMade")}</small></span>
+            <span><b>{isPulling ? t("quickPulling") : quick.outcome === "fired" ? t("quickFiredButton") : t("quickPull")}</b><small>{quick.pulls} · {t("quickShotsMade")}</small></span>
             <ArrowRight size={17} aria-hidden="true" />
           </button>
-          <button className="quick-new-round" type="button" onClick={newRound}>
+          <button className="quick-new-round" type="button" onClick={handleNewRound} disabled={isPulling}>
             <RotateCcw size={15} aria-hidden="true" /> {t("quickNewRound")}
           </button>
         </section>

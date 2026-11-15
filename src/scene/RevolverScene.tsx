@@ -1,14 +1,12 @@
-import { Component, Suspense, lazy, useCallback, useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type KeyboardEvent as ReactKeyboardEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import { gsap } from "gsap";
-import { ArrowRight, LoaderCircle, Volume2 } from "lucide-react";
+import { ArrowRight, Volume2 } from "lucide-react";
 import { cryptoRandom, randomInt } from "../engine/rng";
 import { odds } from "../engine/revolver";
 import { playSound, vibrate } from "../audio/sounds";
 import { useGameStore } from "../store/useGameStore";
 import { useCopy } from "../ui/useCopy";
-import FallbackRevolver from "./FallbackRevolver";
-
-const Revolver3D = lazy(() => import("./Revolver3D"));
+import { RevolverDisplay } from "./RevolverDisplay";
 const minimumHold = 280;
 const delay = (milliseconds: number) => new Promise<void>((resolve) => window.setTimeout(resolve, milliseconds));
 
@@ -22,12 +20,9 @@ export default function RevolverScene() {
   const gunRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<HTMLDivElement>(null);
   const vignetteRef = useRef<HTMLDivElement>(null);
-  const drumRef = useRef<SVGGElement>(null);
   const holdStart = useRef<number | null>(null);
   const firingRef = useRef(false);
   const suppressClick = useRef(false);
-  const [webglAvailable, setWebglAvailable] = useState(false);
-  const [lowQuality, setLowQuality] = useState(false);
   const [spinning, setSpinning] = useState(false);
   const [cocking, setCocking] = useState(false);
   const [firing, setFiring] = useState(false);
@@ -41,11 +36,6 @@ export default function RevolverScene() {
     const update = () => setReducedMotion(media.matches);
     update();
     media.addEventListener("change", update);
-    const canvas = document.createElement("canvas");
-    const context = canvas.getContext("webgl2") ?? canvas.getContext("webgl");
-    setWebglAvailable(Boolean(context));
-    const extension = context?.getExtension("WEBGL_lose_context");
-    extension?.loseContext();
     return () => media.removeEventListener("change", update);
   }, []);
 
@@ -60,13 +50,10 @@ export default function RevolverScene() {
     }, worldRef);
     const entryDuration = reducedMotion || preferences.reducedMotion ? 500 : 1500;
     const spinRequired = game?.config.revolver.mode === "spin" || game?.chaos === "shuffle-cylinder";
-    const spinTimeout = spinRequired ? window.setTimeout(() => {
+    const spinTimeout = spinRequired && !reducedMotion && !preferences.reducedMotion ? window.setTimeout(() => {
       setSpinning(true);
       playSound("ratchet", preferences.volume, preferences.soundEnabled);
       vibrate(45, preferences.haptics);
-      if (drumRef.current) {
-        gsap.fromTo(drumRef.current, { rotation: 0 }, { rotation: 1080, duration: 1.75, ease: "power3.out" });
-      }
       window.setTimeout(() => setSpinning(false), 1800);
     }, entryDuration) : undefined;
     const pulseInterval = window.setInterval(() => {
@@ -92,9 +79,7 @@ export default function RevolverScene() {
       ? game.shotSequence
       : [game.lastShotSurvived === true];
 
-    if (drumRef.current && (game.config.revolver.mode === "classic" || game.config.revolver.mode === "shared")) {
-      gsap.to(drumRef.current, { rotation: "+=60", duration: reducedMotion ? 0.12 : 0.6, ease: "power2.inOut" });
-    }
+    setSpinning(true);
     for (let index = 0; index < sequence.length; index += 1) {
       const survived = sequence[index]!;
       const suspense = lastChamber && index === 0 ? 1900 : 600 + randomInt(1201, cryptoRandom);
@@ -124,6 +109,7 @@ export default function RevolverScene() {
     } else {
       setOutcomeMark("out");
     }
+    setSpinning(false);
     await delay(reducedMotion || preferences.reducedMotion ? 100 : 500);
     setSceneDone(true);
   }, [game, preferences.haptics, preferences.reducedMotion, preferences.soundEnabled, preferences.volume, reducedMotion]);
@@ -135,7 +121,6 @@ export default function RevolverScene() {
     setCocking(true);
     playSound("cock", preferences.volume, preferences.soundEnabled);
     vibrate(35, preferences.haptics);
-    if (drumRef.current) gsap.to(drumRef.current, { rotation: "+=30", duration: 0.3, ease: "power2.inOut" });
   };
 
   const releaseHold = () => {
@@ -145,7 +130,6 @@ export default function RevolverScene() {
     setCocking(false);
     suppressClick.current = true;
     if (heldFor >= minimumHold) void fireSequence();
-    else if (drumRef.current) gsap.to(drumRef.current, { rotation: "-=30", duration: 0.2, ease: "power2.out" });
   };
 
   const keyDown = (event: ReactKeyboardEvent<HTMLButtonElement>) => {
@@ -166,7 +150,6 @@ export default function RevolverScene() {
 
   if (!game) return null;
   const shooter = game.players.find((player) => player.id === game.shooterId);
-  const useFallback = !webglAvailable || preferences.reducedMotion || reducedMotion;
   const cylinder = game.config.revolver.mode === "shared" ? game.sharedRevolver : shooter?.revolver;
   const displayedOdds = cylinder ? odds(cylinder) : { numerator: 0, denominator: 0 };
   const shakeClass = outcomeMark === "out" && !reducedMotion && !preferences.reducedMotion ? " scene-shot-impact" : "";
@@ -194,28 +177,16 @@ export default function RevolverScene() {
         )}
       </div>
 
-      <div ref={gunRef} className="scene-gun">
-        {useFallback ? (
-          <FallbackRevolver
-            drumRef={drumRef}
+      <div className="scene-gun">
+        <div ref={gunRef} className="scene-gun-motion">
+          <RevolverDisplay
+            className="scene-revolver-display"
             spinning={spinning}
             cocking={cocking}
             outcome={outcomeMark}
+            ambientMotion
           />
-        ) : (
-          <SceneErrorBoundary onError={() => setWebglAvailable(false)} fallback={
-            <FallbackRevolver drumRef={drumRef} spinning={spinning} cocking={cocking} outcome={outcomeMark} />
-          }>
-            <Suspense fallback={<div className="scene-loading"><LoaderCircle size={20} />{t("loadingScene")}</div>}>
-              <Revolver3D
-                spinning={spinning}
-                cocking={cocking}
-                lowQuality={lowQuality}
-                onLowQuality={() => setLowQuality(true)}
-              />
-            </Suspense>
-          </SceneErrorBoundary>
-        )}
+        </div>
         {outcomeMark === "out" && <div className={"muzzle-flash" + (reducedMotion || preferences.reducedMotion ? " flash-muted" : "")} aria-hidden="true" />}
       </div>
 
@@ -269,24 +240,4 @@ export default function RevolverScene() {
       <span className="scene-sr-note sr-only" aria-live="polite">{outcomeMark === "live" ? t("survives") : outcomeMark === "out" ? t("eliminated") : ""}</span>
     </section>
   );
-}
-
-class SceneErrorBoundary extends Component<{
-  fallback: React.ReactNode;
-  onError: () => void;
-  children: React.ReactNode;
-}, { failed: boolean }> {
-  state = { failed: false };
-
-  static getDerivedStateFromError() {
-    return { failed: true };
-  }
-
-  componentDidCatch() {
-    this.props.onError();
-  }
-
-  render() {
-    return this.state.failed ? this.props.fallback : this.props.children;
-  }
 }
