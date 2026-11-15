@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { ArrowUpRight, CircleDot, ShieldCheck, Sparkles } from "lucide-react";
 import { useGameStore } from "../store/useGameStore";
 import { PrimaryButton, CardBack } from "./components";
@@ -19,13 +18,7 @@ export default function HomeScreen({
   const heroLines = t("tagline").split("\n");
 
   return (
-    <motion.main
-      className="home-screen content-shell"
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -8 }}
-      transition={{ duration: 0.35 }}
-    >
+    <main className="home-screen content-shell">
       <section className="home-hero">
         <div className="hero-copy">
           <div className="eyebrow"><span className="eyebrow-line" />{t("tableReady")}</div>
@@ -85,6 +78,6 @@ export default function HomeScreen({
           <ArrowUpRight size={18} aria-hidden="true" />
         </button>
       </section>
-    </motion.main>
+    </main>
   );
 }

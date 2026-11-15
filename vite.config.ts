@@ -18,7 +18,20 @@ export default defineConfig({
         orientation: "any",
         icons: [{ src: "/favicon.svg", sizes: "any", type: "image/svg+xml", purpose: "any" }],
       },
-      workbox: { navigateFallback: "/index.html" },
+      workbox: {
+        navigateFallback: "/index.html",
+        globIgnores: ["**/Revolver3D-*.js"],
+        runtimeCaching: [
+          {
+            urlPattern: /\/assets\/Revolver3D-[^/]+\.js$/,
+            handler: "CacheFirst",
+            options: {
+              cacheName: "lazy-scene-chunks",
+              expiration: { maxEntries: 2, maxAgeSeconds: 31_536_000 },
+            },
+          },
+        ],
+      },
     }),
   ],
   test: {

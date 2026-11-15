@@ -61,6 +61,41 @@ select:focus-visible {
   isolation: isolate;
 }
 
+#app-content {
+  display: flex;
+  width: 100%;
+  flex: 1;
+  flex-direction: column;
+}
+
+.screen-loading {
+  display: grid;
+  min-height: 45vh;
+  place-items: center;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.skip-link {
+  position: fixed;
+  z-index: 100;
+  top: 8px;
+  left: 8px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--brass-soft);
+  border-radius: 6px;
+  padding: 0 12px;
+  background: #111913;
+  color: var(--bone);
+  transform: translateY(-150%);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
 .ambient-glow {
   position: fixed;
   z-index: -2;
@@ -123,7 +158,7 @@ select:focus-visible {
 
 .brand-lockup strong {
   color: var(--bone);
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 14px;
   font-weight: 600;
   letter-spacing: .16em;
@@ -224,6 +259,7 @@ select:focus-visible {
 .home-screen {
   flex: 1;
   padding: 48px 0 27px;
+  animation: home-enter 350ms ease-out both;
 }
 
 .home-hero {
@@ -267,7 +303,7 @@ select:focus-visible {
 .winner-screen h1 {
   margin: 21px 0 18px;
   color: var(--bone);
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: clamp(50px, 6vw, 76px);
   font-weight: 400;
   letter-spacing: -.055em;
@@ -423,7 +459,7 @@ select:focus-visible {
   top: 31px;
   left: 35px;
   color: rgb(234 210 163 / 63%);
-  font-family: Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 9px;
   letter-spacing: .24em;
 }
@@ -450,7 +486,7 @@ select:focus-visible {
   padding: 15px;
   background: linear-gradient(135deg, #f1e8d8, #d7c8ac);
   color: #a94d3c;
-  font-family: Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
 }
 
 .art-card-red {
@@ -478,7 +514,7 @@ select:focus-visible {
   right: 29px;
   bottom: 82px;
   color: rgb(231 203 157 / 60%);
-  font-family: Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 9px;
   letter-spacing: .16em;
   line-height: 1.4;
@@ -609,7 +645,7 @@ select:focus-visible {
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-family: Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   line-height: .9;
 }
 
@@ -670,7 +706,7 @@ select:focus-visible {
 .section-index {
   padding-top: 4px;
   color: var(--brass);
-  font-family: Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 11px;
   letter-spacing: .12em;
 }
@@ -678,7 +714,7 @@ select:focus-visible {
 .bottom-note h2 {
   margin: 0 0 4px;
   color: #e2d8c6;
-  font-family: Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 18px;
   font-weight: 400;
 }
@@ -813,7 +849,7 @@ select:focus-visible {
 .section-topline h2 {
   margin: 0;
   color: #eee3cf;
-  font-family: Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 20px;
   font-weight: 400;
 }
@@ -881,7 +917,7 @@ select:focus-visible {
   background: radial-gradient(circle at 34% 23%, color-mix(in srgb, var(--player) 82%, white 18%), var(--player) 72%);
   box-shadow: 0 3px 12px color-mix(in srgb, var(--player) 30%, transparent);
   color: #11140f;
-  font-family: Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 14px;
   font-weight: 700;
 }
@@ -899,8 +935,8 @@ select:focus-visible {
 .mini-button,
 .stepper-button {
   display: grid;
-  width: 38px;
-  height: 38px;
+  width: 44px;
+  height: 44px;
   place-items: center;
   border: 1px solid transparent;
   border-radius: 6px;
@@ -941,14 +977,14 @@ select:focus-visible {
 .inline-stepper output {
   min-width: 37px;
   color: var(--bone);
-  font-family: Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 15px;
   text-align: center;
 }
 
 .stepper-button {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   color: var(--brass-soft);
   font-size: 18px;
 }
@@ -997,8 +1033,8 @@ select:focus-visible {
 .rank-chip {
   position: relative;
   display: grid;
-  min-width: 42px;
-  min-height: 39px;
+  min-width: 48px;
+  min-height: 44px;
   place-items: center;
   border: 1px solid rgb(231 214 183 / 19%);
   border-radius: 6px;
@@ -1031,7 +1067,7 @@ select:focus-visible {
 .rank-chip span {
   position: relative;
   pointer-events: none;
-  font-family: Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 13px;
 }
 
@@ -1162,7 +1198,7 @@ select:focus-visible {
 
 .balance-heading b {
   color: var(--brass-soft);
-  font-family: Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 16px;
   font-weight: 500;
 }
@@ -1249,7 +1285,7 @@ select:focus-visible {
 
 .round-counter b {
   color: var(--brass-soft);
-  font-family: Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 23px;
   font-weight: 400;
 }
@@ -1399,19 +1435,19 @@ select:focus-visible {
 
 .hand-count {
   color: #e6d6b5;
-  font-family: Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 12px;
 }
 
 .hand-count small {
   color: #9bad9a;
-  font-family: Arial, sans-serif;
+  font-family: "Manrope", Arial, sans-serif;
   font-size: 9px;
 }
 
 .hand-count-hidden {
   color: #9dad98;
-  font-family: Arial, sans-serif;
+  font-family: "Manrope", Arial, sans-serif;
   font-size: 9px;
   letter-spacing: .12em;
 }
@@ -1516,6 +1552,11 @@ select:focus-visible {
   to { opacity: 1; transform: rotateY(0) translateY(0); }
 }
 
+@keyframes home-enter {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .color-call {
   display: inline-flex;
   min-height: 23px;
@@ -1545,7 +1586,7 @@ select:focus-visible {
   gap: 10px;
   margin: 13px 0 5px;
   color: #d1ba8b;
-  font-family: Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 12px;
 }
 
@@ -1595,7 +1636,7 @@ select:focus-visible {
 .action-heading h2 {
   margin: 2px 0 0;
   color: #e9dfce;
-  font-family: Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 17px;
   font-weight: 400;
 }
@@ -1653,7 +1694,7 @@ select:focus-visible {
 
 .play-number {
   color: var(--brass);
-  font-family: Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 11px;
 }
 
@@ -1746,7 +1787,7 @@ select:focus-visible {
 
 .undo-button {
   display: inline-flex;
-  min-height: 40px;
+  min-height: 44px;
   align-items: center;
   gap: 6px;
   border: 0;
@@ -1874,7 +1915,7 @@ select:focus-visible {
 
 .reveal-vs {
   color: #867e6e;
-  font-family: Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 10px;
   letter-spacing: .1em;
 }
@@ -1882,7 +1923,7 @@ select:focus-visible {
 .reveal-count {
   margin-left: auto;
   color: var(--brass-soft);
-  font-family: Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 15px;
 }
 
@@ -1899,7 +1940,7 @@ select:focus-visible {
 
 .reveal-target b {
   color: #e1d4bb;
-  font-family: Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 13px;
   font-weight: 400;
 }
@@ -1951,33 +1992,482 @@ select:focus-visible {
   font-size: 10px;
 }
 
-/* Revolver stage stub */
-.shooting-stub {
-  position: relative;
-  display: grid;
-  min-height: min(720px, calc(100dvh - 139px));
-  flex: 1;
-  place-items: center;
+/* Revolver scene */
+.is-scene {
   overflow: hidden;
+}
+
+.is-scene .app-header,
+.is-scene .app-footer {
+  display: none;
+}
+
+.revolver-scene {
+  position: fixed;
+  z-index: 30;
+  inset: 0;
+  display: flex;
+  min-height: 100dvh;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 50% 43%, rgb(126 102 58 / 12%), transparent 42%),
+    radial-gradient(ellipse at 50% 100%, #050806, #10120f 67%, #070a08);
+  color: var(--bone);
+  isolation: isolate;
+}
+
+.scene-vignette {
+  position: absolute;
+  z-index: -1;
+  inset: -14%;
+  opacity: .63;
+  background: radial-gradient(ellipse at 50% 43%, transparent 12%, rgb(0 0 0 / 29%) 54%, rgb(0 0 0 / 92%) 87%);
+  pointer-events: none;
+}
+
+.scene-lamp-cone {
+  position: absolute;
+  z-index: -2;
+  top: -25vh;
+  left: 50%;
+  width: min(66vw, 760px);
+  height: 85vh;
+  background: linear-gradient(180deg, rgb(241 211 156 / 20%), rgb(212 182 129 / 4%) 55%, transparent);
+  clip-path: polygon(38% 0, 62% 0, 100% 100%, 0 100%);
+  filter: blur(12px);
+  opacity: .64;
+  transform: translateX(-50%);
+}
+
+.scene-dust {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  opacity: .37;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 37% 16%, rgb(231 205 158 / 58%) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 63% 19%, rgb(231 205 158 / 40%) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 52% 27%, rgb(231 205 158 / 54%) 0 .8px, transparent 1.5px),
+    radial-gradient(circle at 27% 36%, rgb(231 205 158 / 43%) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 73% 43%, rgb(231 205 158 / 52%) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 43% 58%, rgb(231 205 158 / 45%) 0 .8px, transparent 1.5px),
+    radial-gradient(circle at 66% 64%, rgb(231 205 158 / 40%) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 32% 74%, rgb(231 205 158 / 33%) 0 1px, transparent 1.5px);
+  animation: dust-drift 18s ease-in-out infinite alternate;
+}
+
+@keyframes dust-drift {
+  from { transform: translate3d(-2px, 3px, 0); }
+  to { transform: translate3d(3px, -6px, 0); }
+}
+
+.scene-topline {
+  position: absolute;
+  top: max(24px, env(safe-area-inset-top));
+  right: max(24px, env(safe-area-inset-right));
+  left: max(24px, env(safe-area-inset-left));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #9c988b;
+  font-size: 9px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+
+.scene-topline span:first-child {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #d4c09a;
+}
+
+.scene-topline i {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--brass);
+  box-shadow: 0 0 9px var(--brass);
+}
+
+.scene-player-card {
+  position: absolute;
+  z-index: 2;
+  top: clamp(70px, 10vh, 105px);
+  left: max(28px, calc((100vw - 1130px) / 2));
+  display: flex;
+  min-width: 190px;
+  min-height: 58px;
+  align-items: center;
+  gap: 11px;
+  border: 1px solid rgb(228 204 157 / 18%);
+  border-radius: 10px;
+  padding: 8px 12px;
+  background: rgb(11 16 12 / 64%);
+  box-shadow: 0 9px 30px rgb(0 0 0 / 24%);
+  backdrop-filter: blur(10px);
+}
+
+.scene-player-avatar {
+  display: grid;
+  width: 39px;
+  height: 39px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--player) 60%, white 40%);
+  border-radius: 50%;
+  background: radial-gradient(circle at 33% 25%, color-mix(in srgb, var(--player) 78%, white 22%), var(--player) 72%);
+  color: #11140f;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-weight: 700;
+  transition: filter 500ms ease;
+}
+
+.scene-player-card > span:nth-child(2) {
+  display: grid;
+  gap: 1px;
+}
+
+.scene-player-card small {
+  color: #a09c8d;
+  font-size: 9px;
+}
+
+.scene-player-card b {
+  color: #e6dcc8;
+  font-size: 12px;
+}
+
+.scene-risk {
+  margin-left: 6px;
+  border-left: 1px solid var(--line);
+  padding-left: 10px;
+  color: var(--brass-soft);
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 13px;
+}
+
+.scene-shot-impact .scene-player-avatar {
+  filter: grayscale(1) brightness(.65);
+}
+
+.scene-shot-impact .scene-player-avatar::after {
+  position: absolute;
+  width: 35px;
+  height: 35px;
+  background: linear-gradient(123deg, transparent 44%, rgb(17 20 16 / 86%) 45% 48%, transparent 49%), linear-gradient(62deg, transparent 67%, rgb(17 20 16 / 75%) 68% 71%, transparent 72%);
+  content: "";
+}
+
+.scene-gun {
+  position: absolute;
+  top: 46%;
+  left: 50%;
+  display: grid;
+  width: min(840px, 82vw);
+  aspect-ratio: 1.64;
+  place-items: center;
+  transform: translate(-50%, -50%);
+}
+
+.revolver-3d,
+.revolver-fallback {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.revolver-3d canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.revolver-fallback {
+  filter: drop-shadow(0 30px 34px rgb(0 0 0 / 45%));
+}
+
+.revolver-fallback svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.fallback-gun-group {
+  transform-origin: 50% 55%;
+}
+
+.fallback-fired .fallback-gun-group {
+  filter: saturate(.6) brightness(.92);
+}
+
+.fallback-drum {
+  transform-origin: 235px 164px;
+}
+
+.fallback-drum.drum-spinning {
+  animation: cylinder-spin 1.5s cubic-bezier(.12,.83,.32,1) both;
+}
+
+@keyframes cylinder-spin {
+  to { transform: translate(235px, 164px) rotate(1440deg); }
+}
+
+.hammer-cocking {
+  transform: translateY(-3px);
+}
+
+.fallback-muzzle-bloom {
+  position: absolute;
+  top: 32%;
+  right: 1%;
+  width: 13%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fffbe4 0 7%, #ffd591 8% 23%, rgb(225 123 51 / 53%) 24% 40%, transparent 71%);
+  filter: blur(1px);
+  animation: muzzle-pop 160ms steps(2, end) both;
+}
+
+.scene-loading {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #bcb19c;
+  font-size: 11px;
+}
+
+.scene-loading svg {
+  animation: loading-spin 1.2s linear infinite;
+}
+
+@keyframes loading-spin {
+  to { transform: rotate(360deg); }
+}
+
+.muzzle-flash {
+  position: fixed;
+  z-index: 4;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 69% 47%, rgb(255 247 216 / 96%) 0, rgb(255 228 174 / 73%) 11%, rgb(223 130 66 / 28%) 33%, transparent 68%);
+  mix-blend-mode: screen;
+  animation: muzzle-pop 140ms steps(2, end) both;
+}
+
+.flash-muted {
+  opacity: .18;
+  animation: none;
+}
+
+@keyframes muzzle-pop {
+  0% { opacity: 0; }
+  22% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.scene-lower {
+  position: absolute;
+  right: max(20px, env(safe-area-inset-right));
+  bottom: max(20px, env(safe-area-inset-bottom));
+  left: max(20px, env(safe-area-inset-left));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
 }
 
-.scene-darkness {
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse at 50% 38%, rgb(184 147 86 / 14%), transparent 38%),
-    radial-gradient(ellipse at 50% 100%, rgb(7 9 8 / 86%), transparent 65%);
+.scene-caption {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 23px;
+  margin-bottom: 9px;
+  color: #a7a193;
+  font-size: 10px;
 }
 
-.stub-content {
-  position: relative;
+.scene-state-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #d2ae70;
+  box-shadow: 0 0 9px rgb(210 174 112 / 55%);
+  animation: state-pulse 1.7s ease-in-out infinite;
+}
+
+@keyframes state-pulse {
+  50% { opacity: .36; }
+}
+
+.scene-outcome-stamp {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  z-index: 5;
+  border: 2px solid currentColor;
+  padding: 5px 14px;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(21px, 3vw, 32px);
+  font-weight: 700;
+  letter-spacing: .17em;
+  text-transform: uppercase;
+  transform: translateX(-50%) rotate(-8deg) scale(.75);
+  animation: stamp-in 420ms cubic-bezier(.15,.88,.22,1.18) both;
+}
+
+.scene-outcome-stamp.stamp-live {
+  color: #96c78b;
+  text-shadow: 0 0 20px rgb(119 190 109 / 35%);
+}
+
+.scene-outcome-stamp.stamp-out {
+  color: #e1755e;
+  text-shadow: 0 0 20px rgb(205 72 51 / 35%);
+}
+
+@keyframes stamp-in {
+  from { opacity: 0; transform: translateX(-50%) rotate(-15deg) scale(1.25); }
+  70% { opacity: 1; transform: translateX(-50%) rotate(-6deg) scale(.95); }
+  to { opacity: 1; transform: translateX(-50%) rotate(-8deg) scale(1); }
+}
+
+.scene-controls {
   display: flex;
   width: min(100%, 440px);
-  flex-direction: column;
-  align-items: center;
-  padding: 15px 0 34px;
+  align-items: stretch;
+  gap: 10px;
 }
+
+.cock-button,
+.press-button,
+.scene-finish-button {
+  display: flex;
+  min-height: 62px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgb(220 195 143 / 44%);
+  border-radius: 9px;
+  background: linear-gradient(140deg, rgb(139 109 62 / 77%), rgb(68 54 35 / 83%));
+  color: #f0e2c5;
+  box-shadow: 0 9px 30px rgb(0 0 0 / 26%), inset 0 1px rgb(255 255 255 / 8%);
+  transition: transform var(--motion-quick) ease, background var(--motion-quick) ease, opacity var(--motion-quick) ease;
+}
+
+.cock-button {
+  min-width: 240px;
+  flex: 1;
+  flex-direction: column;
+  gap: 1px;
+  padding: 7px 13px;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.cock-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 17px;
+}
+
+.cock-inner i {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-top: 2px solid currentColor;
+  border-right: 2px solid currentColor;
+  transform: rotate(-45deg);
+}
+
+.cock-button small {
+  color: #d7c49e;
+  font-size: 8px;
+}
+
+.cock-button-active {
+  border-color: #e4c17d;
+  background: linear-gradient(140deg, #9e7b48, #57442c);
+  box-shadow: 0 0 0 4px rgb(195 155 94 / 12%), 0 9px 28px rgb(0 0 0 / 32%);
+  transform: translateY(-2px);
+}
+
+.press-button {
+  min-width: 140px;
+  gap: 12px;
+  background: rgb(17 22 17 / 88%);
+  color: #d0c7b5;
+  font-size: 12px;
+}
+
+.press-button:hover:not(:disabled),
+.cock-button:hover:not(:disabled),
+.scene-finish-button:hover {
+  border-color: var(--brass-soft);
+  filter: brightness(1.12);
+}
+
+.cock-button:disabled,
+.press-button:disabled {
+  cursor: not-allowed;
+  opacity: .4;
+}
+
+.scene-finish-button {
+  min-width: 188px;
+  min-height: 53px;
+  gap: 10px;
+  border-color: #9db28c;
+  background: linear-gradient(130deg, #557653, #304d36);
+  color: #e5efd9;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.scene-footnote {
+  display: flex;
+  min-height: 30px;
+  align-items: center;
+  justify-content: center;
+  gap: 17px;
+  color: #74766d;
+  font-size: 8px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.scene-footnote span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.scene-footnote svg {
+  color: #8d8c7c;
+}
+
+.scene-light .scene-vignette {
+  opacity: .32;
+}
+
+.scene-light .scene-dust,
+.scene-light .scene-lamp-cone {
+  display: none;
+}
+
+.scene-light .muzzle-flash {
+  display: none;
+}
+
 
 .scene-kicker {
   display: inline-flex;
@@ -2027,7 +2517,7 @@ select:focus-visible {
 .stub-content h1 {
   margin: 6px 0 5px;
   color: #e8dfcf;
-  font-family: Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 30px;
   font-weight: 400;
   letter-spacing: -.03em;
@@ -2119,7 +2609,7 @@ select:focus-visible {
   margin-bottom: 24px;
   border: 2px solid currentColor;
   padding: 5px 12px;
-  font-family: Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 12px;
   letter-spacing: .17em;
   transform: rotate(-8deg);
@@ -2201,13 +2691,13 @@ select:focus-visible {
 
 .result-pulls b {
   color: #d9c49a;
-  font-family: Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 16px;
   font-weight: 400;
 }
 
 .result-pulls small {
-  font-family: Arial, sans-serif;
+  font-family: "Manrope", Arial, sans-serif;
   font-size: 9px;
   font-weight: 400;
 }
@@ -2261,7 +2751,7 @@ select:focus-visible {
 
 .winner-nameplate strong {
   color: #eee1c8;
-  font-family: Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 18px;
   font-weight: 400;
 }
@@ -2304,7 +2794,7 @@ select:focus-visible {
 
 .winner-stats b {
   color: #e3d0a9;
-  font-family: Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 19px;
   font-weight: 400;
 }
@@ -2360,7 +2850,7 @@ select:focus-visible {
 
 .winner-player-stats-row b {
   color: #d7c49b;
-  font-family: Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 12px;
   font-weight: 400;
   text-align: center;
@@ -2431,7 +2921,7 @@ select:focus-visible {
 .modal-heading h2 {
   margin: 0;
   color: #eadfc9;
-  font-family: Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 23px;
   font-weight: 400;
 }
@@ -2487,7 +2977,7 @@ select:focus-visible {
 
 .segment {
   min-width: 44px;
-  min-height: 35px;
+  min-height: 44px;
   border: 0;
   border-radius: 5px;
   background: transparent;
@@ -2528,7 +3018,7 @@ select:focus-visible {
 .rule-number {
   padding-top: 2px;
   color: var(--brass);
-  font-family: Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 13px;
 }
 
@@ -2557,6 +3047,70 @@ select:focus-visible {
   color: #c9836f;
   font-size: 16px;
   white-space: nowrap;
+}
+
+.color-example {
+  border: 1px solid rgb(195 155 94 / 17%);
+  border-radius: 9px;
+  margin-top: 9px;
+  padding: 11px 12px;
+  background: rgb(195 155 94 / 3%);
+}
+
+.color-example-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #a69b84;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .15em;
+}
+
+.color-switch {
+  min-height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0 9px;
+  background: rgb(255 255 255 / 3%);
+  color: #c9b889;
+  font-size: 9px;
+  letter-spacing: normal;
+}
+
+.color-example-cards {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 7px;
+  margin: 12px 0 7px;
+}
+
+.color-example-cards > div {
+  display: grid;
+  min-width: 0;
+  justify-items: center;
+  gap: 5px;
+}
+
+.color-example-cards small {
+  color: #929286;
+  font-size: 8px;
+  text-align: center;
+}
+
+.color-example-arrow {
+  color: #9d947f;
+  font-family: Georgia, serif;
+  font-size: 13px;
+}
+
+.color-example-note {
+  margin: 8px 0 0;
+  color: #bd9e79;
+  font-size: 10px;
+  line-height: 1.55;
 }
 
 .color-rule-card b,
@@ -2673,10 +3227,10 @@ select:focus-visible {
 
   .header-actions .icon-button,
   .locale-button {
-    width: 42px;
-    min-width: 42px;
-    min-height: 42px;
-    height: 42px;
+    width: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    height: 44px;
   }
 
   .content-shell {
@@ -2814,9 +3368,9 @@ select:focus-visible {
   }
 
   .back-button {
-    width: 43px;
-    min-width: 43px;
-    height: 43px;
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
     overflow: hidden;
     justify-content: center;
     padding: 0;
@@ -3005,7 +3559,7 @@ select:focus-visible {
 
   .play-button {
     min-width: calc(33.333% - 5px);
-    min-height: 52px;
+    min-height: 56px;
     flex: 1 1 calc(33.333% - 5px);
     flex-direction: column;
     gap: 0;
@@ -3030,7 +3584,7 @@ select:focus-visible {
   }
 
   .undo-button {
-    min-height: 38px;
+    min-height: 44px;
   }
 
   .reveal-screen {
@@ -3170,6 +3724,97 @@ select:focus-visible {
   }
 }
 
+@media (max-width: 700px) {
+  .scene-topline {
+    top: max(16px, env(safe-area-inset-top));
+    right: max(16px, env(safe-area-inset-right));
+    left: max(16px, env(safe-area-inset-left));
+    font-size: 7px;
+  }
+
+  .scene-player-card {
+    top: max(54px, calc(env(safe-area-inset-top) + 48px));
+    left: 16px;
+    min-width: 154px;
+    min-height: 51px;
+    gap: 8px;
+    padding: 6px 9px;
+  }
+
+  .scene-player-avatar {
+    width: 34px;
+    height: 34px;
+    font-size: 12px;
+  }
+
+  .scene-player-card small {
+    font-size: 8px;
+  }
+
+  .scene-player-card b {
+    font-size: 11px;
+  }
+
+  .scene-risk {
+    margin-left: 2px;
+    padding-left: 7px;
+    font-size: 11px;
+  }
+
+  .scene-gun {
+    top: 44%;
+    width: min(100vw, 620px);
+    aspect-ratio: 1.56;
+  }
+
+  .scene-lamp-cone {
+    top: -7vh;
+    width: 93vw;
+    height: 67vh;
+  }
+
+  .scene-lower {
+    right: max(13px, env(safe-area-inset-right));
+    bottom: max(9px, env(safe-area-inset-bottom));
+    left: max(13px, env(safe-area-inset-left));
+  }
+
+  .scene-caption {
+    min-height: 21px;
+    margin-bottom: 4px;
+    font-size: 9px;
+  }
+
+  .scene-controls {
+    width: 100%;
+    gap: 7px;
+  }
+
+  .cock-button {
+    min-width: 0;
+    min-height: 57px;
+  }
+
+  .press-button {
+    min-width: 113px;
+    min-height: 57px;
+    font-size: 10px;
+  }
+
+  .cock-inner {
+    font-size: 15px;
+  }
+
+  .cock-button small {
+    font-size: 7px;
+  }
+
+  .scene-footnote {
+    min-height: 24px;
+    font-size: 7px;
+  }
+}
+
 @media (orientation: landscape) and (max-height: 560px) {
   .app-header {
     min-height: 61px;
@@ -3201,6 +3846,58 @@ select:focus-visible {
 
   .app-footer {
     min-height: 33px;
+  }
+
+  .revolver-scene {
+    min-height: 100dvh;
+  }
+
+  .scene-topline {
+    top: 10px;
+  }
+
+  .scene-player-card {
+    top: 45px;
+    left: 22px;
+    min-height: 47px;
+  }
+
+  .scene-gun {
+    top: 50%;
+    left: 51%;
+    width: min(59vw, 650px);
+  }
+
+  .scene-lower {
+    right: 20px;
+    bottom: 9px;
+    left: auto;
+    width: min(37vw, 410px);
+  }
+
+  .scene-controls {
+    gap: 6px;
+  }
+
+  .cock-button,
+  .press-button {
+    min-height: 48px;
+  }
+
+  .cock-button {
+    min-width: 160px;
+  }
+
+  .cock-inner {
+    font-size: 13px;
+  }
+
+  .scene-caption {
+    margin-bottom: 2px;
+  }
+
+  .scene-footnote {
+    min-height: 21px;
   }
 
   .game-screen {

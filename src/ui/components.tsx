@@ -2,6 +2,7 @@ import { useEffect, useRef, type ReactNode } from "react";
 import { ArrowDown, ArrowLeft, ArrowRight, Settings2, Volume2, VolumeX } from "lucide-react";
 import { useGameStore } from "../store/useGameStore";
 import { useCopy } from "./useCopy";
+import { rankDisplay } from "../i18n/ranks";
 
 export function BrandMark() {
   return (
@@ -26,7 +27,7 @@ export function AppHeader() {
 
   return (
     <header className="app-header">
-      <button className="brand-lockup" type="button" onClick={() => setPage("home")} aria-label={t("brand")}>
+      <button className="brand-lockup" type="button" onClick={() => setPage("home")}>
         <BrandMark />
         <span>
           <strong>{t("brand")}</strong>
@@ -55,7 +56,7 @@ export function AppHeader() {
         <button
           className="locale-button"
           type="button"
-          aria-label="Change language"
+          aria-label={locale === "ru" ? "Сменить язык RU" : "Change language EN"}
           onClick={() => setLocale(locale === "ru" ? "en" : "ru")}
         >
           {locale.toUpperCase()}
@@ -105,7 +106,7 @@ export function PrimaryButton({
 
 export function CardBack({ small = false }: { small?: boolean }) {
   return (
-    <div className={"playing-card card-back" + (small ? " playing-card-small" : "")} aria-label="Карта рубашкой вверх">
+    <div className={"playing-card card-back" + (small ? " playing-card-small" : "")} aria-hidden="true">
       <span className="card-back-pattern" aria-hidden="true">
         <BrandMark />
       </span>
@@ -122,20 +123,22 @@ export function TargetCard({
   color: "red" | "black" | null;
   compact?: boolean;
 }) {
+  const locale = useGameStore((state) => state.locale);
+  const displayRank = rankDisplay(rank, locale);
   const suit = color === "red" ? "♥" : color === "black" ? "♠" : "♣";
   const displayColor = color ?? "neutral";
   return (
     <div
       className={"playing-card target-card target-" + displayColor + (compact ? " playing-card-small" : "")}
-      aria-label={rank + (color ? (color === "red" ? " красная" : " чёрная") : "")}
+      aria-label={displayRank + (color ? (locale === "ru" ? (color === "red" ? " красная" : " чёрная") : (color === "red" ? " red" : " black")) : "")}
     >
       <span className="target-corner">
-        <b>{rank}</b>
+        <b>{displayRank}</b>
         <small aria-hidden="true">{suit}</small>
       </span>
       <span className="target-center" aria-hidden="true">{suit}</span>
       <span className="target-corner target-corner-bottom" aria-hidden="true">
-        <b>{rank}</b>
+        <b>{displayRank}</b>
         <small>{suit}</small>
       </span>
     </div>
@@ -154,11 +157,15 @@ export function Modal({
   wide?: boolean;
 }) {
   const closeRef = useRef<HTMLButtonElement>(null);
+  const previousFocus = useRef<HTMLElement | null>(null);
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
   const t = useCopy();
   useEffect(() => {
+    previousFocus.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     closeRef.current?.focus();
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose();
+      if (event.key === "Escape") onCloseRef.current();
       if (event.key === "Tab") {
         const dialog = document.querySelector<HTMLElement>("[data-modal-dialog]");
         if (!dialog) return;
@@ -176,8 +183,11 @@ export function Modal({
       }
     };
     window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [onClose]);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      previousFocus.current?.focus();
+    };
+  }, []);
 
   return (
     <div className="modal-scrim" role="presentation" onMouseDown={(event) => {

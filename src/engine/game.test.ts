@@ -164,4 +164,48 @@ describe("game state machine", () => {
     expect(restored.players[0]?.revolver.chambers).toBe(6);
     expect(restored.tableRanks).toEqual(state.tableRanks);
   });
+
+  it("uses one shared cylinder without changing each player's personal cylinder", () => {
+    const zeroSource = { nextUint32: () => 0 };
+    let state = createGame(players, config({ revolver: { mode: "shared", chambers: 6, bullets: 1, showOdds: false } }), zeroSource);
+    state = reduceGame(state, { type: "PLAY", quantity: 1 }, zeroSource);
+    state = reduceGame(state, { type: "PLAY", quantity: 1 }, zeroSource);
+    state = reduceGame(state, { type: "CHALLENGE" }, zeroSource);
+    state = reduceGame(state, { type: "RESOLVE_CHALLENGE", truthful: true }, zeroSource);
+    expect(state.phase).toBe("shooting");
+    state = reduceGame(state, { type: "COMPLETE_SCENE" }, zeroSource);
+    expect(state.sharedRevolver.spent).toBe(1);
+    expect(state.players.every((player) => player.revolver.spent === 0)).toBe(true);
+  });
+
+  it("performs the second pull in a double-trigger round after a safe first pull", () => {
+    const zeroSource = { nextUint32: () => 0 };
+    let state = createGame(players, config(), zeroSource);
+    state = { ...state, chaos: "double-trigger" };
+    state = reduceGame(state, { type: "PLAY", quantity: 1 }, zeroSource);
+    state = reduceGame(state, { type: "PLAY", quantity: 1 }, zeroSource);
+    state = reduceGame(state, { type: "CHALLENGE" }, zeroSource);
+    state = reduceGame(state, { type: "RESOLVE_CHALLENGE", truthful: true }, zeroSource);
+    expect(state.shotSequence).toEqual([true, true]);
+    expect(state.pendingCylinder?.spent).toBe(2);
+    state = reduceGame(state, { type: "COMPLETE_SCENE" }, zeroSource);
+    expect(state.stats.shots).toBe(2);
+    expect(state.players[2]?.pulls).toBe(2);
+  });
+
+  it("forbids a challenge on the first play of every round", () => {
+    const zeroSource = { nextUint32: () => 0 };
+    let state = createGame(players, config(), zeroSource);
+    state = reduceGame(state, { type: "PLAY", quantity: 1 }, zeroSource);
+    state = reduceGame(state, { type: "PLAY", quantity: 1 }, zeroSource);
+    state = reduceGame(state, { type: "CHALLENGE" }, zeroSource);
+    state = reduceGame(state, { type: "RESOLVE_CHALLENGE", truthful: false }, zeroSource);
+    state = reduceGame(state, { type: "COMPLETE_SCENE" }, zeroSource);
+    expect(state.phase).toBe("round-over");
+    state = reduceGame(state, { type: "NEXT_ROUND" }, zeroSource);
+    expect(state.turnsThisRound).toBe(0);
+    state = reduceGame(state, { type: "PLAY", quantity: 1 }, zeroSource);
+    expect(state.turnsThisRound).toBe(1);
+    expect(reduceGame(state, { type: "CHALLENGE" }, zeroSource)).toBe(state);
+  });
 });

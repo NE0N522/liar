@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { balancePercent, deckTotal, DEFAULT_PHYSICAL_RANKS, PHYSICAL_RANKS } from "../engine/deck";
 import { DEFAULT_GAME_CONFIG, DEFAULT_PLAYERS, type DeckConfig, type GameConfig, type PlayerSetup } from "../engine/types";
+import { rankDisplay } from "../i18n/ranks";
 import { useGameStore } from "../store/useGameStore";
 import { PrimaryButton } from "./components";
 import { useCopy } from "./useCopy";
@@ -217,7 +218,7 @@ export default function SetupScreen({ onBack }: { onBack: () => void }) {
                         }
                       }}
                     />
-                    <span>{rank}</span>
+                    <span>{rankDisplay(rank, locale)}</span>
                   </label>
                 ))}
               </div>

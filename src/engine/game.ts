@@ -3,7 +3,6 @@ import { cryptoRandom, pick, randomInt } from "./rng";
 import { createCylinder, pullTrigger, reshuffleCylinder } from "./revolver";
 import type {
   ChaosEvent,
-  Cylinder,
   GameConfig,
   GameEvent,
   GameState,
@@ -101,6 +100,9 @@ function determineShot(state: GameState, shooterId: string, source: RandomSource
     cylinder = result.cylinder;
   }
   const latest = shotSequence[shotSequence.length - 1] ?? result.survived;
+  if (state.chaos === "shuffle-cylinder" && latest) {
+    cylinder = reshuffleCylinder(cylinder, state.config.revolver.bullets, source);
+  }
   const log = state.log;
   return {
     ...state,
@@ -262,14 +264,9 @@ export function reduceGame(
     const nextIndex = configuredStart >= 0
       ? configuredStart
       : nextAliveIndex(state.players, shooterIndex, direction);
-    const resetCylinder = (current: Cylinder): Cylinder =>
-      state.chaos === "shuffle-cylinder"
-        ? reshuffleCylinder(current, state.config.revolver.bullets, source)
-        : current;
     const players = state.players.map((player) => ({
       ...player,
       handCount: player.alive ? state.config.handSize : 0,
-      revolver: resetCylinder(player.revolver),
     }));
     const next: GameState = {
       ...state,
@@ -290,10 +287,7 @@ export function reduceGame(
       pendingCylinder: null,
       resultTruthful: null,
       chaos,
-      sharedRevolver:
-        state.chaos === "shuffle-cylinder"
-          ? reshuffleCylinder(state.sharedRevolver, state.config.revolver.bullets, source)
-          : state.sharedRevolver,
+      sharedRevolver: state.sharedRevolver,
       log: logEntry(state, "Раунд " + (state.round + 1) + ". Раздайте по " + state.config.handSize + " карт."),
       stats: { ...state.stats, rounds: state.stats.rounds + 1 },
       direction,

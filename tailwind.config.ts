@@ -12,8 +12,8 @@ export default {
         bone: "var(--bone)",
       },
       fontFamily: {
-        display: ["Georgia", "Times New Roman", "serif"],
-        body: ["Arial", "Helvetica Neue", "sans-serif"],
+        display: ["Cormorant Garamond", "Georgia", "serif"],
+        body: ["Manrope", "Arial", "sans-serif"],
       },
     },
   },
