@@ -29,6 +29,8 @@ export function QuickSetupScreen() {
   const updateSettings = useGameStore((state) => state.updateQuickSettings);
   const startQuickGame = useGameStore((state) => state.startQuickGame);
   const setPage = useGameStore((state) => state.setPage);
+  const targetCount = settings.targetCount === 2 ? 2 : 1;
+  const sameColor = settings.sameColor ?? true;
 
   return (
     <motion.main
@@ -52,6 +54,11 @@ export function QuickSetupScreen() {
       <div className="quick-setup-grid">
         <section className="setup-card quick-setup-card">
           <div className="section-topline"><span className="section-index">01</span><h2>{t("quickTargetOptions")}</h2></div>
+          <label className="field-label">{t("quickTargetCount")}</label>
+          <div className="segmented-control quick-option-control" role="group" aria-label={t("quickTargetCount")}>
+            <button type="button" className={targetCount === 1 ? "segment active" : "segment"} aria-pressed={targetCount === 1} onClick={() => updateSettings({ targetCount: 1 })}>{t("quickOneCard")}</button>
+            <button type="button" className={targetCount === 2 ? "segment active" : "segment"} aria-pressed={targetCount === 2} onClick={() => updateSettings({ targetCount: 2 })}>{t("quickTwoCards")}</button>
+          </div>
           <label className="field-label" htmlFor="quick-rank-range">{t("quickRankRange")}</label>
           <select
             id="quick-rank-range"
@@ -66,9 +73,23 @@ export function QuickSetupScreen() {
             <span><b>{t("colorTruth")}</b><small>{t("quickColorHelp")}</small></span>
             <input type="checkbox" checked={settings.colorTruth} onChange={(event) => updateSettings({ colorTruth: event.target.checked })} />
           </label>
+          {targetCount === 2 && (
+            <div className="quick-pair-color-setting">
+              <div className="quick-pair-color-copy"><b>{t("quickPairColors")}</b><small>{t("quickPairColorHelp")}</small></div>
+              <div className="segmented-control quick-option-control" role="group" aria-label={t("quickPairColors")}>
+                <button type="button" className={sameColor ? "segment active" : "segment"} aria-pressed={sameColor} onClick={() => updateSettings({ sameColor: true })}>{t("quickSameColor")}</button>
+                <button type="button" className={!sameColor ? "segment active" : "segment"} aria-pressed={!sameColor} onClick={() => updateSettings({ sameColor: false })}>{t("quickDifferentColors")}</button>
+              </div>
+            </div>
+          )}
           <div className="quick-settings-note">
-            <TargetCard rank="6" color={settings.colorTruth ? "red" : null} compact />
-            <span>{settings.colorTruth ? t("quickColorExample") : t("quickRankOnly")}</span>
+            {targetCount === 2 ? (
+              <div className="quick-settings-pair-example" aria-hidden="true">
+                <TargetCard rank="6" color="red" compact />
+                <TargetCard rank="Q" color={sameColor ? "red" : "black"} compact />
+              </div>
+            ) : <TargetCard rank="6" color={settings.colorTruth ? "red" : null} compact />}
+            <span>{targetCount === 2 ? (sameColor ? t("quickSameColor") : t("quickDifferentColors")) : settings.colorTruth ? t("quickColorExample") : t("quickRankOnly")}</span>
           </div>
         </section>
 
@@ -190,7 +211,10 @@ export function QuickGameScreen() {
   if (!quick) return null;
 
   const chance = odds(quick.cylinder);
-  const rankName = rankDisplay(quick.tableRank, locale);
+  const targetCards = quick.targetCards?.length ? quick.targetCards : [{ rank: quick.tableRank, color: quick.tableColor }];
+  const targetSummary = targetCards.length === 1
+    ? rankDisplay(targetCards[0]!.rank, locale) + (targetCards[0]!.color ? " · " + t(targetCards[0]!.color) : "")
+    : targetCards.map((card) => rankDisplay(card.rank, locale) + (card.color === "red" ? " ♥" : card.color === "black" ? " ♠" : "")).join(" + ");
   const statusCopy = quick.outcome === "fired"
     ? t("quickFired")
     : quick.outcome === "survived"
@@ -221,10 +245,12 @@ export function QuickGameScreen() {
       <div className="quick-game-grid">
         <section className="quick-card-stage" aria-label={t("quickTarget")}>
           <div className="quick-card-halo" aria-hidden="true" />
-          <span className="quick-card-label">{t("quickTarget")}</span>
-          <TargetCard rank={quick.tableRank} color={quick.tableColor} />
-          <strong className="quick-target-name">{rankName}{quick.tableColor ? " · " + t(quick.tableColor) : ""}</strong>
-          <span className="quick-target-mode">{quick.tableColor ? t("colorMode") : t("quickRankOnly")}</span>
+          <span className="quick-card-label">{t(targetCards.length === 1 ? "quickTarget" : "quickTargets")}</span>
+          <div className={"quick-target-cards" + (targetCards.length === 2 ? " quick-target-cards-pair" : "")}>
+            {targetCards.map((card, index) => <TargetCard key={index + card.rank} rank={card.rank} color={card.color} />)}
+          </div>
+          <strong className="quick-target-name">{targetSummary}</strong>
+          <span className="quick-target-mode">{settings.colorTruth ? t("colorMode") : t("quickRankOnly")}</span>
         </section>
 
         <section className="setup-card quick-revolver-card" aria-label={t("revolver")}>

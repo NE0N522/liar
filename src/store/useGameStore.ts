@@ -112,6 +112,14 @@ export const useGameStore = create<AppStore>()(
     })),
     {
       name: "last-call-save-v1",
+      version: 2,
+      migrate: (persistedState) => {
+        const persisted = persistedState as Partial<AppStore>;
+        return {
+          ...persisted,
+          quickSettings: { ...DEFAULT_QUICK_SETTINGS, ...persisted.quickSettings },
+        } as AppStore;
+      },
       partialize: (state) =>
         ({
           page: state.page,

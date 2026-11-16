@@ -52,14 +52,22 @@ export interface Cylinder {
 export interface QuickSettings {
   colorTruth: boolean;
   ranks: string[];
+  targetCount: 1 | 2;
+  sameColor: boolean;
   chambers: number;
   bullets: number;
   showOdds: boolean;
 }
 
+export interface QuickTargetCard {
+  rank: string;
+  color: CardColor | null;
+}
+
 export interface QuickGameState {
   tableRank: string;
   tableColor: CardColor | null;
+  targetCards: QuickTargetCard[];
   cylinder: Cylinder;
   pulls: number;
   outcome: "waiting" | "survived" | "fired";
